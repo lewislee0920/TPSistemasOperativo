@@ -52,36 +52,7 @@ void setear_operacion(t_operacion *operacion, void *valor) {
             operacion->buffer->size = size;
             operacion->buffer->stream = stream;
             break;
-		case INICIO_PROCESO:
-            size = sizeof(int32_t) + sizeof(unsigned int) + sizeof(int);
-            stream = malloc(size);
-            memcpy(stream, valor, size);
-            operacion->buffer->size = size;
-            operacion->buffer->stream = stream;
-			break;
-        case PCB:
-		case BLOQUEO:
-		case FIN_PROCESO:
-			serializar_proceso_pcb((t_proceso_pcb *)valor,operacion);
-			break;
-		case INTERRUPCION:
-		case FIN_PROCESO_MEMORIA:
-		case SUSPENSION_PROCESO:
-			size = sizeof(int);
-			stream = malloc(size);
-			memcpy(stream, valor, size);
-			operacion->buffer->size = size;
-            operacion->buffer->stream = stream;
-			break;
-        case PRIMERA_SOLICITUD:
-        case SEGUNDA_SOLICITUD:
-        case TERCERA_SOLICITUD:
-            size = sizeof(int32_t) * 3 + sizeof(unsigned int)*2 + sizeof(int)*2 + sizeof(uint32_t);
-            stream = malloc(size);
-            memcpy(stream, valor, size);
-            operacion->buffer->size = size;
-            operacion->buffer->stream = stream;
-            break;
+
     }
     return;
 }
@@ -120,18 +91,6 @@ void *serializar_instrucciones(t_queue *instrucciones, int *size_cola) {
     return stream;
 }
 
-void serializar_proceso_pcb(t_proceso_pcb *proceso_bloqueo, t_operacion *operacion)
-{
-    int size_pcb;
-    void *pcb_serializado = serializar_pcb(proceso_bloqueo->pcb,&size_pcb);
-    operacion->buffer->size = sizeof(int) + size_pcb;
-    operacion->buffer->stream = malloc(operacion->buffer->size);
-    memcpy(operacion->buffer->stream, pcb_serializado, size_pcb);
-    memcpy(operacion->buffer->stream + size_pcb,&(proceso_bloqueo->tiempo_bloqueo),sizeof(int));
-
-    free(pcb_serializado);
-}
-
 void enviar_operacion(t_operacion *operacion, int socket_cliente) {
 	int bytes;
 	void* a_enviar;
@@ -159,49 +118,3 @@ void eliminar_operacion(t_operacion *operacion) {
 	free(operacion->buffer);
 	free(operacion);
 }
-
-void enviar_handshake(int *socket, modulo modulo_solicitante) {
-    void *buffer = malloc(sizeof(int)*2);
-    codigo_operacion handshake = HANDSHAKE;
-    memcpy(buffer, &handshake, sizeof(int));
-    memcpy(buffer + sizeof(int), &modulo_solicitante, sizeof(int));
-    send(*socket, buffer, sizeof(int)*2, 0);
-    free(buffer);
-}
-
-char* obtener_nombre_modulo(modulo un_modulo) {
-    switch (un_modulo)
-    {
-        case CPU:
-            return "CPU";
-        case MEMORIA:
-            return "MEMORIA";
-        case FILESYSTEM:
-        	return "FILESYSTEM"
-        default:
-            return "ERROR";
-    }
-}
-
-int esperar_cliente(int socket_servidor)
-{
-	struct sockaddr_in dir_cliente;
-	int tam_direccion = sizeof(struct sockaddr_in);
-
-	int socket_cliente = accept(socket_servidor,NULL,NULL);
-
-	return socket_cliente;
-}
-
-int recibir_operacion(int socket_cliente)
-{
-	int cod_op;
-	if(recv(socket_cliente, &cod_op, sizeof(int), MSG_WAITALL) != 0)
-		return cod_op;
-	else
-	{
-		close(socket_cliente);
-		return -1;
-	}
-}
-
