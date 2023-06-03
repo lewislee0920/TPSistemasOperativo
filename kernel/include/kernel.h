@@ -29,19 +29,9 @@ typedef struct t_config_kernel
     int[] instancias_recursos;
 } t_config_kernel;
 
-void conexion(void);
-int conectar_con_memoria;
-int conectar_con_cpu;
-int conectar_con_filesystem;
-void confirmar_modulo(int *socket, modulo un_modulo);
 void iniciar_config(char *path_config);
 
 t_config_kernel config_kernel;
-t_log *logger;
 t_config *config;
-
-int socket_cpu;
-int socket_filesystem;
-int socket_memoria;
 
 #endif
