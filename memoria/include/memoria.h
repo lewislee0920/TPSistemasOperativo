@@ -23,6 +23,8 @@ typedef struct t_config_memoria
 } t_config_memoria;
 
 t_config_memoria config_memoria;
+t_config *config;
+
 void iniciar_config(char *path_config);
 
 #endif
