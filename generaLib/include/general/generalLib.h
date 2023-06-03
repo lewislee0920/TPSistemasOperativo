@@ -23,6 +23,10 @@ void serializar_proceso_pcb(t_proceso_pcb *proceso_bloqueo, t_operacion *operaci
 void enviar_operacion(t_operacion *operacion, int socket_cliente);
 void *serializar_operacion(t_operacion *operacion, int bytes);
 void eliminar_operacion(t_operacion *operacion);
+void enviar_handshake(int *socket, modulo modulo_solicitante);
+char* obtener_nombre_modulo(modulo un_modulo);
+int esperar_cliente(int socket_servidor);
+int recibir_operacion(int socket_cliente);
 
 typedef enum
 {
@@ -40,6 +44,14 @@ typedef enum
     SUSPENSION_PROCESO,
 	MSJ
 } codigo_operacion;
+
+typedef enum
+{
+	KERNEL,
+    CPU,
+    MEMORIA,
+	FILESYSTEM
+} modulo;
 
 typedef struct
 {

@@ -159,3 +159,49 @@ void eliminar_operacion(t_operacion *operacion) {
 	free(operacion->buffer);
 	free(operacion);
 }
+
+void enviar_handshake(int *socket, modulo modulo_solicitante) {
+    void *buffer = malloc(sizeof(int)*2);
+    codigo_operacion handshake = HANDSHAKE;
+    memcpy(buffer, &handshake, sizeof(int));
+    memcpy(buffer + sizeof(int), &modulo_solicitante, sizeof(int));
+    send(*socket, buffer, sizeof(int)*2, 0);
+    free(buffer);
+}
+
+char* obtener_nombre_modulo(modulo un_modulo) {
+    switch (un_modulo)
+    {
+        case CPU:
+            return "CPU";
+        case MEMORIA:
+            return "MEMORIA";
+        case FILESYSTEM:
+        	return "FILESYSTEM"
+        default:
+            return "ERROR";
+    }
+}
+
+int esperar_cliente(int socket_servidor)
+{
+	struct sockaddr_in dir_cliente;
+	int tam_direccion = sizeof(struct sockaddr_in);
+
+	int socket_cliente = accept(socket_servidor,NULL,NULL);
+
+	return socket_cliente;
+}
+
+int recibir_operacion(int socket_cliente)
+{
+	int cod_op;
+	if(recv(socket_cliente, &cod_op, sizeof(int), MSG_WAITALL) != 0)
+		return cod_op;
+	else
+	{
+		close(socket_cliente);
+		return -1;
+	}
+}
+
