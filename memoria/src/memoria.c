@@ -10,7 +10,6 @@ int main(int argc, char *argv[])
 
 	iniciar_config(path);
 
-
 	return EXIT_SUCCESS;
 }
 
