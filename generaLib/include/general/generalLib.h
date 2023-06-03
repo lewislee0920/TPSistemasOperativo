@@ -1,6 +1,5 @@
 #ifndef GENERALIB_INCLUDE_GENERALLIB_H_
 #define GENERALIB_INCLUDE_GENERALLIB_H_
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -14,6 +13,7 @@
 
 int crear_conexion(char *ip, char* puerto);
 void enviar_datos_consola(int socket, t_consola *consola);
+t_operacion *crear_operacion(codigo_operacion cod_op);
 void crear_buffer_operacion(t_operacion *operacion);
 void setear_operacion(t_operacion *operacion, void *valor);
 void *serializar_consola(t_consola *consola, int *size);
@@ -29,6 +29,27 @@ int recibir_operacion(int socket_cliente);
 
 typedef enum
 {
+	T_CONSOLA,
+    HANDSHAKE,
+    PCB,
+    BLOQUEO,
+    INTERRUPCION,
+	FIN_PROCESO,
+    FIN_PROCESO_MEMORIA,
+    PRIMERA_SOLICITUD,
+    SEGUNDA_SOLICITUD,
+    TERCERA_SOLICITUD,
+    INICIO_PROCESO,
+    SUSPENSION_PROCESO,
+	MSJ
+} codigo_operacion;
+
+typedef enum
+{
+	KERNEL,
+    CPU,
+    MEMORIA,
+	FILESYSTEM
    KERNEL,
    CPU,
    MEMORIA,
@@ -37,12 +58,16 @@ typedef enum
 
 typedef struct
 {
+	codigo_operacion cod_op;
+	t_buffer* buffer;
    codigo_operacion cod_op;
    t_buffer* buffer;
 } t_operacion;
 
 typedef struct
 {
+	int size;
+	void* stream;
    int size;
    void* stream;
 } t_buffer;
