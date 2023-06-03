@@ -10,31 +10,9 @@ int main(int argc, char *argv[])
 
 	iniciar_config(path);
 
-	int socket_cpu_serv = iniciar_servidor(config_cpu.ip_cpu, config_cpu.puerto_escucha);
-	conectar_con_memoria(socket_cpu_serv);
-
 	return EXIT_SUCCESS;
 }
 
-int conectar_con_memoria(int socket_cpu_serv)
-{
-    socket_memoria = crear_conexion(config_cpu.ip_memoria,config_cpu.puerto_memoria);
-    log_info(logger,"Enviando HANDSHAKE a MEMORIA");
-    enviar_handshake(&socket_memoria,CPU);
-
-    return esperar_handshake(&socket_memoria,confirmar_modulo);
-}
-
-void confirmar_modulo(int *socket, modulo un_modulo) {
-    else if(un_modulo == MEMORIA) {
-       log_info(logger,"Handshake exitoso");
-    }
-    else {
-       log_error(logger,"Fallo Handshake",
-       obtener_nombre_modulo(un_modulo));
-       exit(EXIT_FAILURE);
-    }
-}
 
 void iniciar_config(char *path_config) {
 
