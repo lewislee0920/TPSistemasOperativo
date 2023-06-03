@@ -25,13 +25,8 @@ typedef struct t_config_filesystem
 } t_config_filesystem;
 
 t_config_filesystem config_filesystem;
-t_log *logger;
 t_config *config;
 
-int conectar_con_memoria(int socket_filesystem_serv);
 void iniciar_config(char *path_config);
-void confirmar_modulo(int *socket, modulo un_modulo);
-
-int socket_memoria;
 
 #endif
